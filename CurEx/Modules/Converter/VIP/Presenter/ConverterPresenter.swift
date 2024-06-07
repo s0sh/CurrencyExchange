@@ -28,24 +28,22 @@ protocol ConverterPresenterDelegate: AnyObject {
 
 final class ConverterPresenter {
     
-    var interactor: ConverterInteractor
-    
-    private var autoupdateStarted = false
-   
-    var timer = Timer()
-    
     weak var delegate: ConverterPresenterDelegate?
     
+    var interactor: ConverterInteractor
+    var dataSource: [String] = []
+    var timer = Timer()
+    
+    private var autoupdateStarted = false
     private var data: ExchangeModel = ExchangeModel(sell: .none, get: .none, ammount: "0")
     private var convertDirection: ConvertDirection = .forward
-    
-    var dataSource: [String] = []
     
     init(interactor: ConverterInteractor) {
         self.interactor = interactor
         prepareDataSource()
     }
     
+    // Change direction button pressed in Controller
     func changeDirectionAndConvert() {
         if convertDirection == .forward {
             convertDirection = .backward
@@ -56,14 +54,15 @@ final class ConverterPresenter {
         }
         
         if convertDirection == .backward {
-           let sell = data.get
+            let sell = data.get
             data.get = data.sell
             data.sell = sell
         } else {
             let sell = data.sell
-             data.sell = data.get
-             data.get = sell
+            data.sell = data.get
+            data.get = sell
         }
+        
         convert()
     }
     
@@ -73,10 +72,12 @@ final class ConverterPresenter {
         }
     }
     
+    // Amount has been changed from amount text field
     func changeAmount(value: String) {
         data.ammount = value
     }
     
+    // Currency (sell or get) has choosen from menu
     func currencyChoosen(index: Int, tag: Int, amount: String) {
         switch tag {
         case 0:
@@ -88,22 +89,23 @@ final class ConverterPresenter {
         }
         
         if convertDirection == .backward {
-           let sell = data.get
+            let sell = data.get
             data.get = data.sell
             data.sell = sell
         }
-
+        
         data.ammount = amount
         convert()
     }
     
+    // MARK: - called each time currency changed (both) or value is being changed
     func convert() {
         
         if data.get == .none || data.sell == .none { return }
         
         if data.ammount.isEmpty {
             delegate?.stopLoading()
-            delegate?.displayAlert(title: "Converter", info: "Ammount cannot be empty")
+            delegate?.displayAlert(title: "Converter", info: "Amount cannot be empty")
             return
         }
         
@@ -121,21 +123,20 @@ final class ConverterPresenter {
             }
         }
     }
-    
-    func startAutoUpdateCurrencySession() {
+    // MARK: - Autoupdate every 10 seconds
+    private func startAutoUpdateCurrencySession() {
         DispatchQueue.main.async {
             self.autoupdateStarted = true
             self.timer = Timer.scheduledTimer(timeInterval: 10.0,
-                                         target: self,
-                                         selector: #selector(self.autoconvert),
-                                         userInfo: nil,
-                                         repeats: true)
+                                              target: self,
+                                              selector: #selector(self.autoconvert),
+                                              userInfo: nil,
+                                              repeats: true)
         }
     }
-
-    @objc func autoconvert() {
+    
+    @objc private func autoconvert() {
         self.convert()
-        print("Converter fired!")
     }
-
+    
 }
