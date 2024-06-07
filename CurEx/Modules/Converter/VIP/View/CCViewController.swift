@@ -11,6 +11,8 @@ final class CCViewController: BaseController {
     
     var presenter: ConverterPresenter?
     
+    private lazy var spinner = SpinnerViewController()
+    
     // MARK: - UI components
     private let sellCurrencyMenu: MenuView = MenuView()
     private let getCurrencyMenu: MenuView = MenuView()
@@ -26,12 +28,8 @@ final class CCViewController: BaseController {
    
     private let changeDirectionButton: UIButton = {
         let button = UIButton()
-        button.layer.borderWidth = 1.2
-        button.layer.borderColor = Resources.Colors.active.cgColor
-        button.layer.cornerRadius = 5
-        button.layer.masksToBounds = true
         button.setTitleColor(.red, for: .normal)
-        button.setImage(UIImage(systemName: "arrow.uturn.right.square.fill"), for: .normal)
+        button.setBackgroundImage(UIImage(systemName: "arrow.uturn.right.square.fill"), for: .normal)
         button.addTarget(self, action: #selector(changeDirection), for: .touchUpInside)
         return button
     }()
@@ -39,8 +37,9 @@ final class CCViewController: BaseController {
     private let quantityTextView: UITextField = {
         let textView = UITextField()
         textView.keyboardType = .decimalPad
-        textView.returnKeyType = .done
-        textView.text = "0.0"
+        textView.returnKeyType = .go
+        textView.placeholder = "0.0"
+        textView.textColor = .black
         return textView
     }()
     
@@ -54,6 +53,7 @@ final class CCViewController: BaseController {
         label.layer.cornerRadius = 5
         label.layer.masksToBounds = true
         label.text = "0.0"
+        label.numberOfLines = 0
        return label
     }()
     
@@ -63,7 +63,13 @@ final class CCViewController: BaseController {
         layoutViews()
         configure()
         setupMenues()
+        setupDalegates()
+        addDoneButtonOnKeyboard()
+    }
+    
+    private func setupDalegates() {
         presenter?.delegate = self
+        quantityTextView.delegate = self
     }
    
     override func viewDidAppear(_ animated: Bool) {
@@ -87,7 +93,7 @@ final class CCViewController: BaseController {
         presenter?.changeDirectionAndConvert()
     }
     
-    func showAlert(title: String, info: String) {
+    private func showAlert(title: String, info: String) {
         let alertController = UIAlertController(title: title,
                                                 message: info,
                                                 preferredStyle: .alert)
@@ -100,6 +106,40 @@ final class CCViewController: BaseController {
         DispatchQueue.main.async {
             self.present(alertController, animated: true)
         }
+    }
+    
+    private func addDoneButtonOnKeyboard(){
+        let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        doneToolbar.barStyle = .default
+
+        let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
+
+        let items = [flexSpace, done]
+        doneToolbar.items = items
+        doneToolbar.sizeToFit()
+
+        quantityTextView.inputAccessoryView = doneToolbar
+    }
+
+    @objc private func doneButtonAction(){
+        if let amount = quantityTextView.text {
+            presenter?.changeAmount(value: amount)
+            presenter?.convert()
+        }
+        quantityTextView.resignFirstResponder()
+    }
+    
+}
+
+// MARK: - TextFieldDelegate
+extension CCViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let amount = textField.text {
+            presenter?.changeAmount(value: amount)
+            presenter?.convert()
+        }
+        return true
     }
 }
 
@@ -172,17 +212,38 @@ extension CCViewController: DropDownButtonDelegate {
 
 // MARK: - ConverterPresenterDelegate
 extension CCViewController: ConverterPresenterDelegate {
-    func displayResult(title: String) {
+    func displayResult(title: String, error: Error?) {
         DispatchQueue.main.async {
+            if let error = error {
+                self.showAlert(title: "Network error", info: error.localizedDescription)
+                return
+            }
             self.totalsLabel.text = title
         }
     }
     
     func changeDirectionButtonImage(name: String) {
-        changeDirectionButton.setImage(UIImage(systemName: name), for: .normal)
+        changeDirectionButton.setBackgroundImage(UIImage(systemName: name), for: .normal)
     }
     
     func displayAlert(title: String, info: String) {
         showAlert(title: title, info: info)
+    }
+    
+    func startLoading() {
+        DispatchQueue.main.async {
+            self.addChild(self.spinner)
+            self.spinner.view.frame = self.totalsLabel.frame
+            self.view.addSubview(self.spinner.view)
+            self.spinner.didMove(toParent: self)
+        }
+    }
+    
+    func stopLoading() {
+        DispatchQueue.main.async {
+            self.spinner.willMove(toParent: nil)
+            self.spinner.view.removeFromSuperview()
+            self.spinner.removeFromParent()
+        }
     }
 }

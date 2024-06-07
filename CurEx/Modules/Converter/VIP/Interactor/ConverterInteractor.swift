@@ -7,17 +7,6 @@
 
 import Foundation
 
-struct ExchangeModel {
-    var sell: Currency
-    var get: Currency
-    var ammount: String
-}
-
-enum ConvertDirection {
-    case forward
-    case backward
-}
-
 final class ConverterInteractor {
     
     let converter: ConverterSeerviceProtocol
@@ -26,16 +15,16 @@ final class ConverterInteractor {
         self.converter = converter
     }
     
-    func convert(data: ExchangeModel, direction: ConvertDirection, completion: @escaping (String) -> Void) {
+    func convert(data: ExchangeModel, direction: ConvertDirection, completion: @escaping (String, Error?) -> Void) {
         
         converter.convert(data: data, completion: { result, error in
             
             if let error = error {
-                completion("Network error: \(error.localizedDescription)")
+                completion("", error)
             }
             
             if let res = result {
-                completion("\(res.amount) \(res.currency)")
+                completion("\(res.amount) \(res.currency)", nil)
             }
         })
     }

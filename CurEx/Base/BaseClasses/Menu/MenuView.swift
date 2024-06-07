@@ -16,7 +16,7 @@ class MenuView: UIView {
     private let button: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Currency", for: .normal)
+        button.setTitle("none", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.layer.borderWidth = 0.9
         button.layer.borderColor = R.Colors.active.cgColor
@@ -43,6 +43,7 @@ class MenuView: UIView {
         table.layer.borderColor = R.Colors.active.cgColor
         table.layer.cornerRadius = 5
         table.layer.masksToBounds = true
+        table.backgroundColor = .white
         table.register(UINib(nibName: "MenuTableViewCell", bundle: nil),
                        forCellReuseIdentifier: "MenuTableViewCell")
         return table

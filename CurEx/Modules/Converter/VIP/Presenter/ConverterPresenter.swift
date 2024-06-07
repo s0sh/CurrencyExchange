@@ -7,16 +7,32 @@
 
 import Foundation
 
+struct ExchangeModel {
+    var sell: Currency
+    var get: Currency
+    var ammount: String
+}
+
+enum ConvertDirection {
+    case forward
+    case backward
+}
+
 protocol ConverterPresenterDelegate: AnyObject {
-    func displayResult(title: String)
+    func displayResult(title: String, error: Error?)
     func changeDirectionButtonImage(name : String)
     func displayAlert(title: String, info: String)
-    
+    func startLoading()
+    func stopLoading()
 }
 
 final class ConverterPresenter {
     
     var interactor: ConverterInteractor
+    
+    private var autoupdateStarted = false
+   
+    var timer = Timer()
     
     weak var delegate: ConverterPresenterDelegate?
     
@@ -57,6 +73,10 @@ final class ConverterPresenter {
         }
     }
     
+    func changeAmount(value: String) {
+        data.ammount = value
+    }
+    
     func currencyChoosen(index: Int, tag: Int, amount: String) {
         switch tag {
         case 0:
@@ -78,17 +98,44 @@ final class ConverterPresenter {
     }
     
     func convert() {
+        
         if data.get == .none || data.sell == .none { return }
         
         if data.ammount.isEmpty {
+            delegate?.stopLoading()
             delegate?.displayAlert(title: "Converter", info: "Ammount cannot be empty")
             return
         }
         
+        delegate?.startLoading()
+        
         interactor.convert(data: data,
-                           direction: convertDirection) { result in
-            self.delegate?.displayResult(title: result)
+                           direction: convertDirection) { (result, error) in
+            
+            self.delegate?.displayResult(title: result, error: error)
+            
+            self.delegate?.stopLoading()
+            
+            if self.autoupdateStarted == false {
+                self.startAutoUpdateCurrencySession()
+            }
         }
     }
     
+    func startAutoUpdateCurrencySession() {
+        DispatchQueue.main.async {
+            self.autoupdateStarted = true
+            self.timer = Timer.scheduledTimer(timeInterval: 10.0,
+                                         target: self,
+                                         selector: #selector(self.autoconvert),
+                                         userInfo: nil,
+                                         repeats: true)
+        }
+    }
+
+    @objc func autoconvert() {
+        self.convert()
+        print("Converter fired!")
+    }
+
 }

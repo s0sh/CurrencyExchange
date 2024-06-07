@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B506B0482C12F28100AF099E /* ConverterPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B506B0472C12F28100AF099E /* ConverterPresenter.swift */; };
+		B506B04C2C13075600AF099E /* SpinnerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B506B04B2C13075600AF099E /* SpinnerController.swift */; };
 		B56C5E032C11C0BD0033AEBB /* BaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C5DF82C11C0BD0033AEBB /* BaseController.swift */; };
 		B56C5E042C11C0BD0033AEBB /* BaseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C5DF92C11C0BD0033AEBB /* BaseView.swift */; };
 		B56C5E052C11C0BD0033AEBB /* NavBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56C5DFA2C11C0BD0033AEBB /* NavBarController.swift */; };
@@ -31,6 +32,7 @@
 
 /* Begin PBXFileReference section */
 		B506B0472C12F28100AF099E /* ConverterPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverterPresenter.swift; sourceTree = "<group>"; };
+		B506B04B2C13075600AF099E /* SpinnerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerController.swift; sourceTree = "<group>"; };
 		B56C5DF82C11C0BD0033AEBB /* BaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseController.swift; sourceTree = "<group>"; };
 		B56C5DF92C11C0BD0033AEBB /* BaseView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseView.swift; sourceTree = "<group>"; };
 		B56C5DFA2C11C0BD0033AEBB /* NavBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavBarController.swift; sourceTree = "<group>"; };
@@ -81,6 +83,14 @@
 			path = Presenter;
 			sourceTree = "<group>";
 		};
+		B506B04D2C13076D00AF099E /* Spinner */ = {
+			isa = PBXGroup;
+			children = (
+				B506B04B2C13075600AF099E /* SpinnerController.swift */,
+			);
+			path = Spinner;
+			sourceTree = "<group>";
+		};
 		B56C5DF62C11C06E0033AEBB /* AppLayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -104,6 +114,7 @@
 		B56C5DFC2C11C0BD0033AEBB /* BaseClasses */ = {
 			isa = PBXGroup;
 			children = (
+				B56C5E1A2C1210FA0033AEBB /* Menu */,
 				B56C5E0E2C11C24E0033AEBB /* UI */,
 				B56C5E0D2C11C2300033AEBB /* Navigation */,
 			);
@@ -124,6 +135,7 @@
 			children = (
 				B56C5DFC2C11C0BD0033AEBB /* BaseClasses */,
 				B56C5E002C11C0BD0033AEBB /* Extensions */,
+				B506B04D2C13076D00AF099E /* Spinner */,
 				B56C5E012C11C0BD0033AEBB /* Resources.swift */,
 				B56C5E102C11C8DB0033AEBB /* CurrencyList.swift */,
 			);
@@ -142,7 +154,6 @@
 		B56C5E0E2C11C24E0033AEBB /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				B56C5E1A2C1210FA0033AEBB /* Menu */,
 				B56C5DF82C11C0BD0033AEBB /* BaseController.swift */,
 				B56C5DF92C11C0BD0033AEBB /* BaseView.swift */,
 			);
@@ -321,6 +332,7 @@
 				B56C5E092C11C0BD0033AEBB /* UIView+ext.swift in Sources */,
 				B506B0482C12F28100AF099E /* ConverterPresenter.swift in Sources */,
 				B56C5E1D2C1210FA0033AEBB /* MenuView.swift in Sources */,
+				B506B04C2C13075600AF099E /* SpinnerController.swift in Sources */,
 				B56C5E052C11C0BD0033AEBB /* NavBarController.swift in Sources */,
 				B56C5E132C11D5CA0033AEBB /* CCControllerAssembler.swift in Sources */,
 				B56C5E152C11DB8E0033AEBB /* ConverterCervice.swift in Sources */,
