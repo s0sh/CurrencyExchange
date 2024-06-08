@@ -116,7 +116,7 @@ class MenuView: UIView {
 
     func updateTableDataSource() {
         if dataSource.count >= maxVisibleCellsAmount {
-            tableViewHeight?.constant = CGFloat(maxVisibleCellsAmount) * buttonHeight
+            tableViewHeight?.constant = CGFloat(maxVisibleCellsAmount * 2) * buttonHeight
         } else {
             tableViewHeight?.constant = CGFloat(dataSource.count) * buttonHeight
         }

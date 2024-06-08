@@ -150,12 +150,12 @@ extension CCViewController: UITextFieldDelegate {
 extension CCViewController {
     override func addViews() {
         super.addViews()
-        view.addView(sellCurrencyMenu)
-        view.addView(getCurrencyMenu)
         view.addView(changeDirectionButton)
         view.addView(textViewPlaceholder)
         view.addView(totalsLabel)
         textViewPlaceholder.addView(quantityTextView)
+        view.addView(sellCurrencyMenu)
+        view.addView(getCurrencyMenu)
         
     }
     
@@ -186,7 +186,7 @@ extension CCViewController {
             getCurrencyMenu.leadingAnchor.constraint(equalTo: changeDirectionButton.leadingAnchor, constant: 64),
             getCurrencyMenu.widthAnchor.constraint(equalToConstant: 80),
             
-            totalsLabel.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor),
+            totalsLabel.topAnchor.constraint(equalTo: quantityTextView.bottomAnchor, constant: 20),
             totalsLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             totalsLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             totalsLabel.heightAnchor.constraint(equalToConstant: 100)
