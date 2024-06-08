@@ -1,4 +1,4 @@
-# CurrencyExchange
+# 8 hours approx was spent to complete the task.
 # App architecture is VIP, TabBar, NavigationController, Service, Assembler
 # Module relationships: Controller-Presenter[Interactor<->Presenter]->controller
 1) The task must be done in Swift - ✅
@@ -12,5 +12,6 @@
  a) a clear relationship between the parts of the code ✅ (It seems to me that it is like suggested)
  b) the code is understandable, simple, readable ✅ (It seems to me that it is like suggested)
  c) the addition of a new functionality or an existing change should not require rewriting the entire system (It seems to me that it is like suggested)
-adding new currency should be easy ✅ (It seems to me that it is like suggested)
+adding new currency should be easy ✅
+# Just uncomment needed currency inside CurrencyList.swift [enum Currency]
 
