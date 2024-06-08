@@ -121,6 +121,7 @@ class MenuView: UIView {
             tableViewHeight?.constant = CGFloat(dataSource.count) * buttonHeight
         }
         tableView.reloadData()
+        title = tag == 0 ? "From" : "To"
     }
 
     @objc private func buttonTapped() {

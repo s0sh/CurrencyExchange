@@ -12,7 +12,7 @@ final class CCViewController: BaseController {
     var presenter: ConverterPresenter?
     
     private lazy var spinner = SpinnerViewController()
-    
+   
     // MARK: - UI components
     private let sellCurrencyMenu: MenuView = MenuView()
     private let getCurrencyMenu: MenuView = MenuView()
@@ -29,7 +29,8 @@ final class CCViewController: BaseController {
     private let changeDirectionButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(.red, for: .normal)
-        button.setBackgroundImage(UIImage(systemName: "arrow.uturn.right.square.fill"), for: .normal)
+        button.tintColor = .green
+        button.setBackgroundImage(UIImage(systemName: "arrow.down"), for: .normal)
         button.addTarget(self, action: #selector(changeDirection), for: .touchUpInside)
         return button
     }()
@@ -40,6 +41,7 @@ final class CCViewController: BaseController {
         textView.returnKeyType = .go
         textView.placeholder = "0.0"
         textView.textColor = .black
+        textView.font = Resources.Fonts.helveticaBold(with: 30)
         return textView
     }()
     
@@ -80,30 +82,27 @@ final class CCViewController: BaseController {
     }
    
     private func setupMenues() {
-        sellCurrencyMenu.dataSource = presenter?.dataSource ?? []
-        getCurrencyMenu.dataSource = presenter?.dataSource ?? []
-        
         sellCurrencyMenu.tag = 0
         getCurrencyMenu.tag = 1
         
+        sellCurrencyMenu.dataSource = presenter?.dataSource ?? []
+        getCurrencyMenu.dataSource = presenter?.dataSource ?? []
+       
         sellCurrencyMenu.delegate = self
         getCurrencyMenu.delegate = self
     }
     
-    private func addDoneButtonOnKeyboard(){
+    private func addDoneButtonOnKeyboard() {
         let doneToolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
         doneToolbar.barStyle = .default
-
+        
         let flexSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let done: UIBarButtonItem = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(self.doneButtonAction))
-
+        
         let items = [flexSpace, done]
         doneToolbar.items = items
         doneToolbar.sizeToFit()
-
-        quantityTextView.inputAccessoryView = doneToolbar
     }
-    
     // MARK: - Actions
     @objc
     private func changeDirection() {
@@ -164,28 +163,28 @@ extension CCViewController {
         
         NSLayoutConstraint.activate([
             textViewPlaceholder.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            textViewPlaceholder.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
-            textViewPlaceholder.widthAnchor.constraint(equalToConstant: 70),
-            textViewPlaceholder.heightAnchor.constraint(equalToConstant: 40),
+            textViewPlaceholder.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            textViewPlaceholder.widthAnchor.constraint(equalToConstant: 100),
+            textViewPlaceholder.heightAnchor.constraint(equalToConstant: 100),
             
             quantityTextView.leadingAnchor.constraint(equalTo: textViewPlaceholder.leadingAnchor, constant: 10),
-            quantityTextView.trailingAnchor.constraint(equalTo: textViewPlaceholder.trailingAnchor, constant: -10),
-            quantityTextView.topAnchor.constraint(equalTo: textViewPlaceholder.topAnchor, constant: 2),
-            quantityTextView.bottomAnchor.constraint(equalTo: textViewPlaceholder.bottomAnchor, constant: -2),
+            quantityTextView.trailingAnchor.constraint(equalTo: textViewPlaceholder.trailingAnchor, constant: -5),
+            quantityTextView.topAnchor.constraint(equalTo: textViewPlaceholder.topAnchor, constant: 5),
+            quantityTextView.bottomAnchor.constraint(equalTo: textViewPlaceholder.bottomAnchor, constant: -5),
             
             sellCurrencyMenu.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            sellCurrencyMenu.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 110),
-            sellCurrencyMenu.widthAnchor.constraint(equalToConstant: 80),
+            sellCurrencyMenu.leadingAnchor.constraint(equalTo: textViewPlaceholder.leadingAnchor, constant: 110),
+            sellCurrencyMenu.widthAnchor.constraint(equalToConstant: 130),
+            
+            getCurrencyMenu.topAnchor.constraint(equalTo: sellCurrencyMenu.bottomAnchor, constant: 20),
+            getCurrencyMenu.leadingAnchor.constraint(equalTo: textViewPlaceholder.leadingAnchor, constant: 110),
+            getCurrencyMenu.widthAnchor.constraint(equalToConstant: 130),
             
             changeDirectionButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            changeDirectionButton.leadingAnchor.constraint(equalTo: sellCurrencyMenu.leadingAnchor, constant: 100),
-            changeDirectionButton.widthAnchor.constraint(equalToConstant: 44),
-            changeDirectionButton.heightAnchor.constraint(equalToConstant: 40),
-            
-            getCurrencyMenu.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
-            getCurrencyMenu.leadingAnchor.constraint(equalTo: changeDirectionButton.leadingAnchor, constant: 64),
-            getCurrencyMenu.widthAnchor.constraint(equalToConstant: 80),
-            
+            changeDirectionButton.leadingAnchor.constraint(equalTo: getCurrencyMenu.leadingAnchor, constant: 150),
+            changeDirectionButton.widthAnchor.constraint(equalToConstant: 60),
+            changeDirectionButton.heightAnchor.constraint(equalToConstant: 100),
+   
             totalsLabel.topAnchor.constraint(equalTo: quantityTextView.bottomAnchor, constant: 20),
             totalsLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
             totalsLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
@@ -209,6 +208,15 @@ extension CCViewController: DropDownButtonDelegate {
             showAlert(title: "Data processing", info: "Enter ammount!")
             return
         }
+        
+        if let source = presenter?.dataSource, let code = Currency(rawValue: source[index])?.rawValue {
+            if tag == 0 {
+                self.sellCurrencyMenu.title = countryFlag(countryCode: code)
+            } else {
+                self.getCurrencyMenu.title = countryFlag(countryCode: code)
+            }
+        }
+        
         presenter?.currencyChoosen(index: index, tag: tag, amount: amount)
     }
 }

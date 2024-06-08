@@ -47,10 +47,10 @@ final class ConverterPresenter {
     func changeDirectionAndConvert() {
         if convertDirection == .forward {
             convertDirection = .backward
-            delegate?.changeDirectionButtonImage(name: "arrow.uturn.left.square.fill")
+            delegate?.changeDirectionButtonImage(name: "arrow.up")
         } else {
             convertDirection = .forward
-            delegate?.changeDirectionButtonImage(name: "arrow.uturn.right.square.fill")
+            delegate?.changeDirectionButtonImage(name: "arrow.down")
         }
         
         if convertDirection == .backward {
